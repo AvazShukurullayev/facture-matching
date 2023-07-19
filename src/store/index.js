@@ -6,6 +6,7 @@ import ecommerceStoreModule from "@/views/apps/e-commerce/eCommerceStoreModule";
 import app from "./app";
 import appConfig from "./app-config";
 import verticalMenu from "./vertical-menu";
+import factureMatching from "./facture-matching";
 
 Vue.use(Vuex);
 
@@ -14,7 +15,8 @@ export default new Vuex.Store({
     app,
     appConfig,
     verticalMenu,
+    factureMatching,
     "app-ecommerce": ecommerceStoreModule,
   },
-  // strict: process.env.DEV,
+  strict: process.env.DEV,
 });

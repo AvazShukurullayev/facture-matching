@@ -8,6 +8,7 @@
               id="mc-contractor-name"
               placeholder="Contractor name"
               v-model="form.contractor.name"
+              required
             />
           </b-form-group>
         </b-col>
@@ -17,6 +18,7 @@
               id="mc-contractor-code"
               placeholder="Contractor code"
               v-model="form.contractor.code"
+              required
             />
           </b-form-group>
         </b-col>
@@ -26,6 +28,7 @@
               id="mc-info-number"
               placeholder="Info number"
               v-model="form.info.number"
+              required
             />
           </b-form-group>
         </b-col>
@@ -36,6 +39,7 @@
               type="date"
               placeholder="Info date"
               v-model="form.info.date"
+              required
             />
           </b-form-group>
         </b-col>
@@ -43,8 +47,9 @@
           <b-form-group label="Storno number" label-for="mc-storno-number">
             <b-form-input
               id="mc-storno-number"
-              placeholder="Date"
+              placeholder="Storno number"
               v-model="form.storno_number"
+              required
             />
           </b-form-group>
         </b-col>
@@ -55,6 +60,7 @@
               type="number"
               placeholder="Sum"
               v-model="form.sum"
+              required
             />
           </b-form-group>
         </b-col>
@@ -65,6 +71,7 @@
               type="number"
               placeholder="Total"
               v-model="form.total"
+              required
             />
           </b-form-group>
         </b-col>
@@ -74,6 +81,7 @@
               id="mc-shipment-number"
               placeholder="Shipment number"
               v-model="form.shipment_number"
+              required
             />
           </b-form-group>
         </b-col>
@@ -83,6 +91,7 @@
               id="mc-branch-code"
               placeholder="Branch code"
               v-model="form.branch_code"
+              required
             />
           </b-form-group>
         </b-col>
@@ -92,6 +101,7 @@
               id="mc-order-number"
               placeholder="Order number"
               v-model="form.order_number"
+              required
             />
           </b-form-group>
         </b-col>
@@ -101,6 +111,7 @@
               id="mc-sap-code"
               placeholder="Sap code"
               v-model="form.sap_code"
+              required
             />
           </b-form-group>
         </b-col>
@@ -211,16 +222,9 @@ export default {
         sap_code: this.form.sap_code,
         type: 1,
       });
-      try {
-        const response = await axios.post(
-          "http://localhost:8696/facture-match/act/register",
-          payload
-        );
-        console.log(response);
-        await this.getApi();
-      } catch (error) {
-        console.log(error);
-      }
+      console.log("Form payload => ", payload);
+      await this.postApi(payload);
+      await this.getApi();
 
       this.form = {
         info: {

@@ -6,14 +6,17 @@
         <b-modal id="bv-modal-example" hide-footer>
           <template #modal-title> About {{ tableData.fullName }}</template>
           <div class="border p-1">
-            <p><b>Name:</b> {{ tableData.fullName }}</p>
-            <p><b>City:</b> {{ tableData.city }}</p>
-            <p><b>Email:</b> {{ tableData.email }}</p>
-            <p><b>Post:</b> {{ tableData.post }}</p>
-            <p><b>Date:</b> {{ tableData.startDate }}</p>
-            <p><b>Original index:</b> {{ tableData.originalIndex }}</p>
-            <p><b>Id:</b> {{ tableData.id }}</p>
-            <p><b>Salary:</b> {{ tableData.salary }}</p>
+            <p><b>Contractor name:</b> {{ tableData.contractor.name }}</p>
+            <p><b>Contractor code:</b> {{ tableData.contractor.code }}</p>
+            <p><b>Branch code:</b> {{ tableData.branch_code }}</p>
+            <p><b>Info number:</b> {{ tableData.info.number }}</p>
+            <p><b>Info date:</b> {{ tableData.info.date }}</p>
+            <p><b>Order number:</b> {{ tableData.order_number }}</p>
+            <p><b>Sap code:</b> {{ tableData.sap_code }}</p>
+            <p><b>Shipment number:</b> {{ tableData.shipment_number }}</p>
+            <p><b>Storno number:</b> {{ tableData.storno_number }}</p>
+            <p><b>Sum:</b> {{ tableData.sum }}</p>
+            <p><b>Total:</b> {{ tableData.total }}</p>
           </div>
           <b-button
             class="mt-3"
@@ -143,7 +146,7 @@
     <!-- table -->
     <vue-good-table
       :columns="columns"
-      :rows="rows"
+      :rows="getRows"
       :rtl="direction"
       :search-options="{
         enabled: true,
@@ -314,14 +317,21 @@ export default {
       rows: [],
       searchTerm: "",
       tableData: {
-        fullName: "",
-        city: "",
-        email: "",
-        id: "",
-        originalIndex: "",
-        post: "",
-        salary: "",
-        startDate: "",
+        contractor: {
+          name: "",
+          code: "",
+        },
+        branch_code: "",
+        info: {
+          number: "",
+          date: "",
+        },
+        order_number: "",
+        sap_code: "",
+        shipment_number: "",
+        storno_number: "",
+        sum: null,
+        total: null,
       },
     };
   },
@@ -354,25 +364,35 @@ export default {
       this.searchTerm = val;
     },
     onRowClick(params) {
-      console.log(params);
-      /* (this.tableData = {
-        fullName: params.row.fullName,
-        city: params.row.city,
-        email: params.row.email,
-        id: params.row.id,
-        originalIndex: params.row.originalIndex,
-        post: params.row.post,
-        salary: params.row.salary,
-        startDate: this.rangeDate,
-        startDate: `${this.dateRange.startDate} - ${this.dateRange.endDate}`,
+      console.log("params", params);
+      (this.tableData = {
+        contractor: {
+          name: params.row.contractor.name,
+          code: params.row.contractor.code,
+        },
+        branch_code: params.row.branch_code,
+        info: {
+          number: params.row.info.number,
+          date: params.row.info.date,
+        },
+        order_number: params.row.order_number,
+        sap_code: params.row.sap_code,
+        shipment_number: params.row.shipment_number,
+        storno_number: params.row.storno_number,
+        sum: params.row.sum,
+        total: params.row.total,
       }),
-        console.log(this.tableData); */
+        console.log(this.tableData);
       this.$bvModal.show("bv-modal-example");
     },
   },
   async created() {
+    console.log("Created API");
     await this.getApi();
-    this.rows = await this.getRows;
+  },
+  async mounted() {
+    console.log("Mounted API");
+    await this.getApi();
   },
 };
 </script>
