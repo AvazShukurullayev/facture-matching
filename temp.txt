@@ -1,0 +1,35 @@
+*** GoodTableAdvanceSearchVuexy.vue ***
+created() {
+    shetta api orqali row ni to'ldiraman row ustida ishlashim kerak
+    table dan data la kevotti shekilli?
+    this.$http.get("/good-table/advanced-search").then((res) => {
+    this.rows = res.data;
+    console.log(res);
+    });
+    await axios
+      .get("http://localhost:8696/facture-match/act?type=1")
+      .then((res) => (this.rows = res.data))
+      .catch((err) => console.log(err));
+    const test = await new Promise((resolve, reject) => {
+      factureMatch
+        .getAllAct()
+        .then((res) => {
+          this.rows = res.data;
+          resolve(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    axios
+      .get("http://localhost:8696/facture-match/act?type=1")
+      .then((res) => {
+        console.log("test res", res);
+        resolve(res);
+      })
+      .catch((err) => {
+        console.log("test err", err);
+        reject(err);
+      });
+    });
+  },
