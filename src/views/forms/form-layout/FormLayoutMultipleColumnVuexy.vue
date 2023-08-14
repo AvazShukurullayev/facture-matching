@@ -143,7 +143,6 @@
 
 <script>
 import { mapActions } from "vuex";
-import axios from "axios";
 import {
   BRow,
   BCol,
@@ -202,7 +201,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["getApi", "postApi"]),
+    ...mapActions(["getApi", "postApi", "getOneApi", "getRowsCountApi"]),
     async submit() {
       let payload = JSON.stringify({
         info: {
@@ -223,6 +222,7 @@ export default {
         type: 1,
       });
       console.log("Form payload => ", payload);
+
       await this.postApi(payload);
       await this.getApi();
 

@@ -1,7 +1,7 @@
 <template>
   <b-card-code :title="title">
     <div class="custom-search">
-      <!--? modal  -->
+      <!-- modal-info started -->
       <div>
         <b-modal id="bv-modal-example" hide-footer>
           <template #modal-title> About {{ tableData.fullName }}</template>
@@ -27,7 +27,106 @@
           </b-button>
         </b-modal>
       </div>
-      <!--? modal  -->
+      <!-- modal-info finished -->
+
+      <!--? modal-edit started  -->
+      <b-modal id="bv-modal-update" hide-footer>
+        <template #modal-title> About {{ tableData.fullName }}</template>
+        <div class="border p-1">
+          <p>
+            <b>Contractor name:</b>
+            <b-form-input
+              v-model="tableData.contractor.name"
+              placeholder="Enter your name"
+            ></b-form-input>
+          </p>
+          <p>
+            <b>Contractor code:</b>
+            <b-form-input
+              v-model="tableData.contractor.code"
+              placeholder="Enter your name"
+            ></b-form-input>
+          </p>
+          <p>
+            <b>Branch code:</b>
+            <b-form-input
+              v-model="tableData.branch_code"
+              placeholder="Enter your name"
+            ></b-form-input>
+          </p>
+          <p>
+            <b>Info number:</b>
+            <b-form-input
+              v-model="tableData.info.number"
+              placeholder="Enter your name"
+            ></b-form-input>
+          </p>
+          <p>
+            <b>Info date:</b>
+            <b-form-input
+              v-model="tableData.info.date"
+              placeholder="Enter your name"
+            ></b-form-input>
+          </p>
+          <p>
+            <b>Order number:</b>
+            <b-form-input
+              v-model="tableData.order_number"
+              placeholder="Enter your name"
+            ></b-form-input>
+          </p>
+          <p>
+            <b>Sap code:</b>
+            <b-form-input
+              v-model="tableData.sap_code"
+              placeholder="Enter your name"
+            ></b-form-input>
+          </p>
+          <p>
+            <b>Shipment number:</b>
+            <b-form-input
+              v-model="tableData.shipment_number"
+              placeholder="Enter your name"
+            ></b-form-input>
+          </p>
+          <p>
+            <b>Storno number:</b>
+            <b-form-input
+              v-model="tableData.storno_number"
+              placeholder="Enter your name"
+            ></b-form-input>
+          </p>
+          <p>
+            <b>Sum:</b>
+            <b-form-input
+              v-model="tableData.sum"
+              placeholder="Enter your name"
+            ></b-form-input>
+          </p>
+          <p>
+            <b>Total:</b>
+            <b-form-input
+              v-model="tableData.total"
+              placeholder="Enter your name"
+            ></b-form-input>
+          </p>
+        </div>
+        <div class="w-100 d-flex justify-content-end">
+          <b-button-group>
+            <b-button
+              class="mt-3"
+              block
+              @click="$bvModal.hide('bv-modal-update')"
+            >
+              Cancel
+            </b-button>
+            <b-button variant="info" class="mt-3" block @click="updatedData">
+              Save
+            </b-button>
+          </b-button-group>
+        </div>
+      </b-modal>
+      <!--? modal-edit finished  -->
       <b-row>
         <b-col md="3">
           <b-form-group>
@@ -147,31 +246,58 @@
     <vue-good-table
       :columns="columns"
       :rows="getRows"
+      :line-numbers="true"
       :rtl="direction"
       :search-options="{
         enabled: true,
         externalQuery: searchTerm,
       }"
       :select-options="{
-        enabled: true,
+        enabled: false,
         selectOnCheckboxOnly: true, // only select when checkbox is clicked instead of the row
         selectionInfoClass: 'custom-class',
         selectionText: 'rows selected',
         clearSelectionText: 'clear',
-        disableSelectInfo: true, // disable the select info panel on top
-        selectAllByGroup: true, // when used in combination with a grouped table, add a checkbox in the header row to check/uncheck the entire group
+        disableSelectInfo: false, // disable the select info panel on top
+        selectAllByGroup: false, // when used in combination with a grouped table, add a checkbox in the header row to check/uncheck the entire group
       }"
       :pagination-options="{
         enabled: true,
         perPage: pageLength,
       }"
       theme="my-theme"
-      @on-row-click="onRowClick"
     >
       <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field === 'fullName'" class="text-nowrap">
           <span>{{ props.row.fullName }}</span>
         </span>
+
+        <span v-else-if="props.column.field === 'action'">
+          <span>
+            <b-dropdown
+              variant="link"
+              toggle-class="text-decoration-none"
+              no-caret
+            >
+              <template v-slot:button-content>
+                <feather-icon
+                  icon="MoreVerticalIcon"
+                  size="16"
+                  class="text-body align-middle mr-25"
+                />
+              </template>
+              <b-dropdown-item @click="showItem(props)">
+                <feather-icon icon="EyeIcon" class="mr-50" />
+                <span>Show</span>
+              </b-dropdown-item>
+              <b-dropdown-item @click="editItem(props)">
+                <feather-icon icon="Edit2Icon" class="mr-50" />
+                <span>Update</span>
+              </b-dropdown-item>
+            </b-dropdown>
+          </span>
+        </span>
+
         <span v-else>
           {{ props.formattedRow[props.column.field] }}
         </span>
@@ -184,7 +310,7 @@
             <span class="text-nowrap"> Showing 1 to </span>
             <b-form-select
               v-model="pageLength"
-              :options="['3', '5', '10']"
+              :options="pageLimitOptions"
               class="mx-1"
               @input="
                 (value) => props.perPageChanged({ currentPerPage: value })
@@ -232,13 +358,17 @@ import {
   BRow,
   BCol,
   BButton,
+  BDropdown,
+  BDropdownItem,
+  BButtonGroup,
 } from "bootstrap-vue";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import { VueGoodTable } from "vue-good-table";
 import store from "@/store/index";
 import { codeAdvance } from "./code";
 import ModalBasicVuexy from "@/views/components/modal/ModalBasicVuexy.vue";
-import axios from "axios";
+// import axios from "axios";
+import ModalFormScrollVuexy from "../../components/modal/ModalFormScrollVuexy.vue";
 export default {
   components: {
     BCardCode,
@@ -255,6 +385,10 @@ export default {
     ModalBasicVuexy,
     flatPickr,
     factureMatch,
+    BDropdown,
+    BDropdownItem,
+    ModalFormScrollVuexy,
+    BButtonGroup,
   },
   props: {
     title: {
@@ -306,16 +440,22 @@ export default {
           field: "total",
         },
         {
-          label: "Id",
-          field: "id",
-        },
-        {
-          label: "Orig. ind.",
-          field: "originalIndex",
+          label: "Action",
+          field: "action",
         },
       ],
       rows: [],
       searchTerm: "",
+      // pageLimitOptions
+      pageLimitOptions: [
+        { text: "3", value: 3 },
+        { text: "5", value: 5 },
+        { text: "10", value: 10 },
+        { text: "25", value: 25 },
+        { text: "50", value: 50 },
+        { text: "75", value: 75 },
+        { text: "100", value: 100 },
+      ],
       tableData: {
         contractor: {
           name: "",
@@ -333,6 +473,7 @@ export default {
         sum: null,
         total: null,
       },
+      userId: "",
     };
   },
   filters: {
@@ -363,9 +504,9 @@ export default {
     advanceSearch(val) {
       this.searchTerm = val;
     },
-    onRowClick(params) {
-      console.log("params", params);
-      (this.tableData = {
+    showItem(params) {
+      console.log("show param => ", params);
+      this.tableData = {
         contractor: {
           name: params.row.contractor.name,
           code: params.row.contractor.code,
@@ -381,9 +522,38 @@ export default {
         storno_number: params.row.storno_number,
         sum: params.row.sum,
         total: params.row.total,
-      }),
-        console.log(this.tableData);
+      };
       this.$bvModal.show("bv-modal-example");
+    },
+    editItem(params) {
+      console.log("Params Edit => ", params);
+      this.userId = params.row.id;
+      this.tableData = {
+        contractor: {
+          name: params.row.contractor.name,
+          code: params.row.contractor.code,
+        },
+        branch_code: params.row.branch_code,
+        info: {
+          number: params.row.info.number,
+          date: params.row.info.date,
+        },
+        order_number: params.row.order_number,
+        sap_code: params.row.sap_code,
+        shipment_number: params.row.shipment_number,
+        storno_number: params.row.storno_number,
+        sum: params.row.sum,
+        total: params.row.total,
+      };
+      this.$bvModal.show("bv-modal-update");
+    },
+    updatedData() {
+      console.log("table Data => ", this.tableData);
+      this.$bvModal.show("bv-modal-update");
+      this.$store.dispatch("editApi", {
+        payload: JSON.stringify(this.tableData),
+        id: this.userId,
+      });
     },
   },
   async created() {

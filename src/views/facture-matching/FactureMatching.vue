@@ -8,6 +8,7 @@
 <script>
 import FormLayoutMultipleColumnVuexy from "@/views/forms/form-layout/FormLayoutMultipleColumnVuexy.vue";
 import GoodTableAdvanceSearchVuexy from "@/views/table/vue-good-table/GoodTableAdvanceSearchVuexy.vue";
+
 import "vue-good-table/dist/vue-good-table.css";
 
 export default {
@@ -25,8 +26,6 @@ export default {
   methods: {
     onSubmit() {},
   },
-
- 
 };
 </script>
 

@@ -1,0 +1,26 @@
+1. GoodTableAdvanceSearchVuexy.vue
+      theme="my-theme"
+      @on-row-click="onRowClick"
+
+    onRowClick(params) {
+      console.log("params", params);
+      (this.tableData = {
+        contractor: {
+          name: params.row.contractor.name,
+          code: params.row.contractor.code,
+        },
+        branch_code: params.row.branch_code,
+        info: {
+          number: params.row.info.number,
+          date: params.row.info.date,
+        },
+        order_number: params.row.order_number,
+        sap_code: params.row.sap_code,
+        shipment_number: params.row.shipment_number,
+        storno_number: params.row.storno_number,
+        sum: params.row.sum,
+        total: params.row.total,
+      }),
+        console.log(this.tableData);
+      this.$bvModal.show("bv-modal-example");
+    },
